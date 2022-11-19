@@ -1,7 +1,6 @@
 <?php
-require('tcpdf_include.php');
 include "vendor/autoload.php";
-use TCPDF;
+use Fpdf\Fpdf;
 
 class PDF extends FPDF
 {
