@@ -1,8 +1,12 @@
 <?php
+//require('tcpdf_include.php');
 include "vendor/autoload.php";
-use Fpdf\Fpdf;
+use TCPDF;
+ob_start();
 
-class PDF extends FPDF
+$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+class PDF extends TCPDF
 {
 
 function __construct()
@@ -25,20 +29,22 @@ function __construct()
     {
         // Header
         foreach($headers as $col)
-            $this->Cell(40,7,$col,1);
-        $this->Ln();
+          $this->Cell(40,7,$col,1);
+          $this->Ln();
         // Data
         foreach($data as $row)
         {
             foreach($row as $col)
-                $this->Cell(40,6,$col,1);
+                $pdf->Cell(40,6,$col,1);
+                $pdf->Cell(0, 0, 'CODE 39 - ANSI MH10.8M-1983 - USD-3 - 3 of 9', 0, 1);
+                $pdf->write1DBarcode('CODE 39', 'C39', '', '', '', 18, 0.4, $style, 'N');
             $this->Ln();
         }
     }
 }
 
 // (A) OPEN CSV FILE
-$stream = fopen("countries.csv", "r");
+$stream = fopen("countries_code.csv", "r");
 
 // (B) EXTRACT ROWS & COLS
 $index = 0;
@@ -61,18 +67,8 @@ while (($row = fgetcsv($stream)) !== false) {
 // (C) CLOSE CSV FILE
 fclose($stream);
 
-// $pdf = new PDF();
-// // Column headings
-// $header = array('Country (or dependency)','Population on -2020','Yearly Change','Net Change','Density (P/Km�)','Land Area Km�)','Migrants (net)','Fert. Rate','Med. Age','Urban Pop %','World Share');
-// // Data loading
-// $data = $pdf->LoadData('countries.txt');
-// $pdf->SetFont('Arial','',14);
-// $pdf->AddPage();
-// $pdf->BasicTable($header,$data);
-// $pdf->Output();
-
 $pdf = new PDF();
-$pdf->SetFont('Arial','',12);
+//$pdf->SetFont('Arial','',12);
 $pdf->AddPage();
 $pdf->BasicTable($headers, $data);
 $pdf->Output();

@@ -1,9 +1,9 @@
 <?php
+require('tcpdf_include.php');
 include "vendor/autoload.php";
+use TCPDF;
 
-use Fpdf\Fpdf;
-
-$pdf = new Fpdf();
+$pdf = new TCPDF();
 $pdf->AddFont('PartyConfetti');
 $pdf->AddPage();
 $pdf->SetFont('PartyConfetti','',35);
